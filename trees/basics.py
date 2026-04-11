@@ -306,6 +306,101 @@ def widthOfTree(root):
                 q.append(currNode.right, 2*currIndex + 1)
 
 
+rootval = root.val
+def childrenSum(root):
+    if root is None:
+        return
+    # child val initialisation
+    child = 0
+    if root.left:
+        child += root.left.val
+    if root.right:
+        child += root.right.val
+
+    # comparing
+    if child >= root.val:
+        root.val = child
+    else:
+        if root.left:
+            root.left.val = root.val
+        if root.right:
+            root.right.val = root.val
+
+    # recursion
+    childrenSum(root.left)
+    childrenSum(root.right)
+
+    # total
+    total = 0
+
+    if root.left:
+        total += root.left.val
+    if root.right:
+        total += root.right.val
+    
+    if root.left or root.right:
+        root.val = total
+
+
+def distanceK(root, target, k):
+    # Step 1: Build a parent map
+    parentMap = {}
+    
+    def dfs(root, parent):
+        if root is None:
+            return
+        parentMap[root] = parent
+        dfs(root.right, root)
+        dfs(root.left, root)
+    
+    dfs(root, None)
+
+    # Step 2: traversing
+    q = deque([[target, 0]])
+    ans = []
+    visited = {target}
+    while q:
+
+        node, dist = q.popleft()
+        if dist == k:
+            ans.append(node.val)
+        elif dist < k:
+
+            for neighbour in [node.left, node.right, parentMap[node]]:
+                if neighbour is not None and neighbour not in visited:
+                    visited.add(neighbour)
+                    q.append([neighbour, dist+1])
+
+
+def burnTheTree(root, start):
+    
+    parentMap = {}
+
+    # step 1 dfs traversal for marking parent nodes
+    def dfs(root, parent):
+        if root is None:
+            return
+        parentMap[root] = parent
+        dfs(root.right, root)
+        dfs(root.left, root)
+    
+    dfs(root, None)
+
+    visited = {start}
+    q = deque(visited)
+    time = 0
+    while len(visited) != len(parentMap) and q:
+        node = q.popleft()
+
+        for neighbour in [node.left, node.right, parentMap[node]]:
+
+            if neighbour not in visited and neighbour is not None:
+                visited.add(neighbour)
+                q.append(neighbour)
+        time += 1
+    
+    return time-1
+
 
 print("Preorder: ")
 preorder(root)
@@ -335,3 +430,5 @@ print(f"rightView : {rightviewans}")
 
 
 print(lca(root, 3, 4).val)
+
+print(f"time to burn the tree: {burnTheTree(root, root.left)}")
