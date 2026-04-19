@@ -402,6 +402,56 @@ def burnTheTree(root, start):
     return time-1
 
 
+def ceil(root, key):
+    ceil = [float("inf")]
+
+    def helper(root, key, ceil):
+        if root is None:
+            return
+
+        # stop if exact match already found
+        if ceil[0] == key:
+            return
+
+        if root.val == key:
+            ceil[0] = key
+            return
+        
+        if root.val >= key:
+            if root.val < ceil[0]:
+                ceil[0] = root.val
+            helper(root.left, key, ceil)
+
+        elif root.val < key:
+            helper(root.right, key, ceil)
+
+    helper(root, key, ceil)
+    # fix: handle case when ceil not found
+    return ceil[0] if ceil[0] != float("inf") else -1
+
+def insertIntoBST(root, key):
+    if root is None:
+        return TreeNode(key)
+
+    prev = None
+    curr = root
+
+    while curr:
+        prev = curr
+        if key < curr.val:
+            curr = curr.left
+        else:
+            curr = curr.right
+
+    new_node = TreeNode(key)
+
+    if key < prev.val:
+        prev.left = new_node
+    else:
+        prev.right = new_node
+
+    return root
+
 print("Preorder: ")
 preorder(root)
 print('\n')
@@ -432,3 +482,6 @@ print(f"rightView : {rightviewans}")
 print(lca(root, 3, 4).val)
 
 print(f"time to burn the tree: {burnTheTree(root, root.left)}")
+
+
+print(f"ceiling val : {ceil(root, 4)}")

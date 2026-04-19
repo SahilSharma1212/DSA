@@ -7,7 +7,6 @@ class TreeNode:
 inorder = [4, 2, 5, 1, 6, 3]
 
 preorder = [1, 2, 4, 5, 3, 6]
-
 def inpretoBinTree(inorder, preorder):
     # Base case
     if not inorder or not preorder:
